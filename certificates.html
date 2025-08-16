@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <!-- metas -->
+    <meta charset="utf-8">
+    <meta name="author" content="themepaa">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords" content="Zemo - Certificate Portfolio Template">
+    <meta name="description" content="Zemo - Certificate & Achievements Portfolio Template">
+    <!-- title -->
+    <title>Dev - Certificates</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <!-- theme css (base) -->
+    <link href="static/css/dark/style.css" rel="stylesheet">
+
+    <!-- Extra Styles for Certificate Showcase -->
+    <style>
+        :root{
+            --glow:#7c4dff;
+            --glow2:#00e5ff;
+            --cardBg: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.12);
+        }
+
+        /* Page bg shimmer */
+        body.dark-bg{
+            background: radial-gradient(1200px 800px at 10% 10%, rgba(124,77,255,.08), transparent 60%),
+                        radial-gradient(1000px 700px at 90% 30%, rgba(0,229,255,.08), transparent 60%),
+                        #0b0f17;
+        }
+
+        /* Header brand tweak */
+        .navbar-brand{
+            position: relative;
+            font-weight: 800;
+            letter-spacing: .5px;
+        }
+        .navbar-brand span{ display:none; }
+        .navbar-brand::after{
+            content: ' • Certificates';
+            font-weight: 500;
+            color: rgba(255,255,255,.6);
+            margin-left:.25rem;
+        }
+
+        /* Page Title */
+        .page-title{ position:relative; overflow:hidden; }
+        .page-title::before{
+            content:''; position:absolute; inset:-40%;
+            background: conic-gradient(from 0deg, rgba(124,77,255,.15), rgba(0,229,255,.15), transparent 40%);
+            filter: blur(60px); animation: spin 20s linear infinite;
+        }
+        @keyframes spin{ to{ transform: rotate(360deg);} }
+        .page-title h1{ letter-spacing:1px; }
+
+        /* Section: Certificates Grid */
+        .certificate-listing{ position:relative; }
+        .certificate-post{ 
+            background: var(--cardBg);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: transform .4s ease, box-shadow .4s ease, border-color .3s ease;
+            will-change: transform;
+        }
+        .certificate-img{ position:relative; overflow:hidden; }
+        .certificate-img img{ width:100%; height:auto; display:block; transform: scale(1.02); transition: transform .6s ease; }
+        .certificate-img .data{
+            position:absolute; top:16px; left:16px; z-index:2;
+            background: linear-gradient(135deg, rgba(124,77,255,.9), rgba(0,229,255,.9));
+            color:#0b0f17; padding:8px 10px; border-radius:12px; text-align:center; line-height:1;
+            box-shadow: 0 8px 24px rgba(124,77,255,.35);
+        }
+        .certificate-img .data span{ display:block; font-weight:900; font-size:18px; }
+        .certificate-img .data small{ font-weight:700; letter-spacing:1px; }
+
+        .certificate-info{ padding:18px; position:relative; }
+        .certificate-info h6 a{ color:#fff; text-decoration:none; }
+        .certificate-info p{ color: rgba(255,255,255,.75); }
+
+        /* Hover interactions: desktop only */
+        @media (hover:hover) and (pointer:fine){
+            .certificate-post:hover{ transform: translateY(-6px) scale(1.01); border-color: rgba(124,77,255,.45); box-shadow: 0 20px 50px rgba(124,77,255,.15), 0 10px 24px rgba(0,229,255,.08);}            
+            .certificate-post:hover .certificate-img img{ transform: scale(1.08); }
+        }
+
+        /* Glow button */
+        .px-btn-arrow{ position:relative; overflow:hidden; border-radius:999px; }
+        .px-btn-arrow span{ position:relative; z-index:2; }
+        .px-btn-arrow::before{
+            content:''; position:absolute; inset:-2px; border-radius:999px;
+            background: linear-gradient(90deg, var(--glow), var(--glow2));
+            filter: blur(6px); opacity:.6; transition: opacity .3s ease;
+        }
+        .px-btn-arrow:hover::before{ opacity:1; }
+
+        /* Tags */
+        .tag-cloud a{
+            border:1px solid var(--border); border-radius:999px; padding:6px 12px;
+            background: rgba(255,255,255,.04); transition: background .3s ease, transform .2s ease;
+        }
+        .tag-cloud a:hover{ background: rgba(124,77,255,.15); transform: translateY(-2px); }
+
+        /* Sidebar widgets glass effect */
+        .widget{ background: var(--cardBg); border:1px solid var(--border); border-radius:18px; backdrop-filter: blur(8px); }
+        .widget-title h3{ letter-spacing:.5px; }
+
+        /* Appear animation */
+        .reveal{ opacity:0; transform: translateY(16px) scale(.98); transition: opacity .7s ease, transform .7s ease; }
+        .reveal.in-view{ opacity:1; transform: none; }
+
+        /* Ribbon badge */
+        .ribbon{
+            position:absolute; right:-8px; top:16px; z-index:3; color:#0b0f17; font-weight:800; font-size:12px; letter-spacing:1px;
+            background: linear-gradient(135deg, #00e5ff, #7c4dff); padding:6px 10px; border-radius:8px 0 0 8px; box-shadow: 0 10px 24px rgba(0,229,255,.2);
+        }
+
+        /* Mouse parallax shimmer on cards */
+        .certificate-post .shine{ position:absolute; inset:0; pointer-events:none; background: radial-gradient(600px 200px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.12), transparent 60%); opacity:.0; transition: opacity .25s ease; }
+        @media (hover:hover) and (pointer:fine){ .certificate-post:hover .shine{ opacity:.8; } }
+
+        /* Pagination styling */
+        .pagination .page-link{ border-radius:10px; border-color:var(--border); background:transparent; color:#fff; }
+        .pagination .page-item.active .page-link{ background: linear-gradient(90deg, var(--glow), var(--glow2)); color:#0b0f17; border-color:transparent; }
+
+        /* "Certificate Details" meta list */
+        .meta{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0; }
+        .meta .pill{ font-size:.75rem; background: rgba(255,255,255,.06); border:1px solid var(--border); padding:4px 8px; border-radius:999px; }
+
+        /* Mobile: always show details */
+        @media (max-width: 767.98px){
+            .certificate-info p{ opacity:1; }
+        }
+
+        /* Footer icons hover */
+        .footer.white a:hover{ transform: translateY(-3px) scale(1.05); transition: transform .25s ease; }
+
+        /* Utility: gradient text */
+        .gtext{ background: linear-gradient(90deg, #fff, #b8b8ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+        /* Optional subtle border glow on scroll */
+        .glow-border{ position:relative; }
+        .glow-border::after{
+            content:''; position:absolute; inset:0; border-radius:18px; pointer-events:none;
+            box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 40px rgba(124,77,255,.05) inset; transition: box-shadow .6s ease;
+        }
+        .glow-border.in-view::after{ box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 0 80px rgba(124,77,255,.15) inset; }
+
+        /* Carousel dots soft */
+        .owl-dots .owl-dot span{ background: rgba(255,255,255,.25) !important; }
+        .owl-dots .owl-dot.active span{ background: linear-gradient(90deg, var(--glow), var(--glow2)) !important; }
+
+        /* Fancy heading underline */
+        .fancy-underline{ position:relative; display:inline-block; }
+        .fancy-underline::after{
+            content:''; position:absolute; left:0; right:0; bottom:-6px; height:3px;
+            background: linear-gradient(90deg, var(--glow), var(--glow2)); border-radius:999px;
+        }
+
+        /* Certificate action bar */
+        .btn-bar{ display:flex; gap:10px; align-items:center; }
+        .btn-secondary-outline{ border:1px solid var(--border); background:transparent; color:#fff; padding:10px 14px; border-radius:999px; text-decoration:none; }
+        .btn-secondary-outline:hover{ background: rgba(255,255,255,.06); }
+
+        /* Search & Filter (optional, not wired to backend) */
+        .filters{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+        .filters input, .filters select{ background:#0f1522; border:1px solid var(--border); color:#fff; border-radius:10px; padding:10px 12px; }
+
+    </style>
+</head>
+<!-- Body Start -->
+
+<body data-bs-spy="scroll" data-bs-target="#navbar-collapse-toggle" data-bs-offset="90" class="dark-bg">
+    <!-- page loading -->
+    <div id="loading">
+        <div class="load-circle"><span class="one"></span></div>
+    </div>
+    <!-- End -->
+    <!-- Header -->
+    <header class="main-header">
+        <nav class="navbar header-nav header-white header-transparent navbar-expand-lg">
+            <div class="container">
+                <!-- Brand -->
+                <a class="navbar-brand" href="#">Dev<span></span></a>
+                <!-- / -->
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-toggle" aria-controls="navbar-collapse-toggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <!-- / -->
+                <!-- Top Menu -->
+                <div class="collapse navbar-collapse justify-content-end" id="navbar-collapse-toggle">
+                    <ul class="navbar-nav ml-auto">
+                        <li><a class="nav-link" href="index.html#home"><span>Home</span></a></li>
+                        <li><a class="nav-link" href="index.html#about"><span>About</span></a></li>
+                        <li><a class="nav-link" href="index.html#skills"><span>Skills</span></a></li>
+                        <li><a class="nav-link" href="index.html#work"><span>Projects</span></a></li>
+                        <li><a class="nav-link active" href="#blog"><span>Certificates</span></a></li>
+                        <li><a class="nav-link" href="index.html#contactus"><span>Contact</span></a></li>
+                    </ul>
+                </div>
+                <!-- / -->
+            </div><!-- Container -->
+        </nav> <!-- Navbar -->
+    </header>
+    <!-- End Header -->
+    <main id="blog">
+        <!-- Home Banner -->
+        <section class="page-title dark-bg-1">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 white-color text-center">
+                        <h1 class="gtext fancy-underline">Certificates & Achievements</h1>
+                        <ol class="breadcrumb justify-content-center">
+                            <li><a href="index.html">Home</a></li>
+                            <li class="active">Certificates</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Home Banner -->
+
+        <!-- Certificates List -->
+        <section class="certificate-listing">
+            <div class="container">
+                <!-- optional filters bar -->
+                <div class="filters reveal glow-border" data-reveal>
+                    <input type="text" id="searchCert" placeholder="Search certificate title..." aria-label="Search certificates">
+                    <select id="filterYear" aria-label="Filter by year">
+                        <option value="">All Years</option>
+                        <option>2025</option>
+                    </select>
+                    <select id="filterCategory" aria-label="Filter by category">
+                        <option value="">All Categories</option>
+                        <option>Programming</option>
+                        <option>Design</option>
+                        <option>Science</option>
+                        <option>Business</option>
+                    </select>
+                </div>
+
+                <div class="row align-items-start">
+                    <div class="col-lg-8 my-3">
+                        <div class="row" id="certGrid">
+                            <!-- Certificate Card 1 -->
+                            <div class="col-sm-6 cert-item" data-year="2025" data-category="Design">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="ribbon">NEW</div>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-1.png" target="_blank" rel="noopener">
+                                            <div class="data">
+                                                <span>16</span>
+                                                <small>AUG</small>
+                                            </div>
+                                            <img src="static/img/cert-1.png" title="Vision App" alt="Azure Certificate">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+
+
+
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Computer Vision App</a></h6>
+                                        <p>Issued by <strong>Coursera</strong> ·Learned to build intelligent computer vision applications using Azure Cognitive Services.</p>
+                                        <div class="meta">
+                                            <span class="pill">2025</span>
+                                            <span class="pill">Design</span>
+                                            <span class="pill">Verified</span>
+                                        </div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-1.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Certificate Card 2 -->
+                            <div class="col-sm-6 cert-item" data-year="2024" data-category="Design">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-2.png" target="_blank" rel="noopener">
+                                            <div class="data">
+                                                <span>16</span>
+                                                <small>AUG</small>
+                                            </div>
+                                            <img src="static/img/cert-2.png" title="AI" alt="UI/UX Certificate">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Introduction to AI</a></h6>
+                                        <p>Issued by <strong>Linkedin</strong> · Introduction to AI – Foundational course on Artificial Intelligence concepts and applications.</p>
+                                        <div class="meta">
+                                            <span class="pill">2025</span>
+                                            <span class="pill">AI</span>
+                                            <span class="pill">Basics</span>
+                                        </div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-2.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Certificate Card 3 -->
+                            <div class="col-sm-6 cert-item" data-year="2023" data-category="Science">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-3.png" target="_blank" rel="noopener">
+                                            <div class="data">
+                                                <span>14</span>
+                                                <small>AUG</small>
+                                            </div>
+                                            <img src="static/img/cert-3.png" title="GenAI" alt="GenAI">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Genrative AI</a></h6>
+                                        <p>Issued by <strong>LinkedIn</strong> ·  Practical course on AI-driven content creation and applications.</p>
+                                        <div class="meta">
+                                            <span class="pill">2025</span>
+                                            <span class="pill">AI</span>
+                                            <span class="pill">Expertise</span>
+                                        </div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-3.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Certificate Card 4 -->
+                            <div class="col-sm-6 cert-item" data-year="2024" data-category="Programming">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-4.png" target="_blank" rel="noopener">
+                                            <div class="data">
+                                                <span>14</span>
+                                                <small>AUG</small>
+                                            </div>
+                                            <img src="static/img/cert-4.png" title="AI" alt="AI">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Responsible AI</a></h6>
+                                        <p>Issued by <strong>Microsoft</strong> · Course on ethical and practical AI implementation, real-world AI solutions, and responsible deployment.”</p>
+                                        <div class="meta">
+                                            <span class="pill">2025</span>
+                                            <span class="pill">AI</span>
+                                            <span class="pill">Ethics</span>
+                                        </div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-4.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Certificate Card 5 -->
+                            <div class="col-sm-6 cert-item" data-year="2022" data-category="Business">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-5.png" target="_blank" rel="noopener">
+                                            <div class="data">
+                                                <span>14</span>
+                                                <small>AUG</small>
+                                            </div>
+                                            <img src="static/img/cert-5.png" title="Prompt" alt="prompt">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Prompt Engineering</a></h6>
+                                        <p>Issued by <strong>SkillUp</strong> · Course on designing effective AI prompts and optimizing code generation with Copilot.”</p>
+                                        <div class="meta">
+                                            <span class="pill">2025</span>
+                                            <span class="pill">AI</span>
+                                            <span class="pill">Science</span>
+                                        </div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-5.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Certificate Card 6 -->
+
+
+
+                            <div class="col-sm-6 cert-item" data-year="2021" data-category="Science">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-6.png" target="_blank" rel="noopener">
+                                            <div class="data">
+                                                <span>14</span>
+                                                <small>AUG</small>
+                                            </div>
+                                            <img src="static/img/cert-6.png" title="AI ETHICS" alt="AI">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">AI Ethics</a></h6>
+                                        <p>Issued by <strong>LinkedIn</strong> · Exploring ethical considerations, responsible AI practices, and societal impacts of generative AI technologies.</p>
+                                        <div class="meta">
+                                            <span class="pill">2025</span>
+                                            <span class="pill">AI</span>
+                                            <span class="pill">Ethics</span>
+                                        </div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-6.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Extra cards to cross 450+ lines / richer grid -->
+                            <div class="col-sm-6 cert-item" data-year="2025" data-category="Programming">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-7.png" target="_blank" rel="noopener">
+                                            <div class="data"><span>15</span><small>AUG</small></div>
+                                            <img src="static/img/cert-7.png" alt="EVERYDAY TASKS">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">AI for Everyday Tasks</a></h6>
+                                        <p>Issued by <strong>Microsoft</strong> · Earned badge demonstrating practical use of AI tools to streamline daily workflows and enhance productivity.</p>
+                                        <div class="meta"><span class="pill">2025</span><span class="pill">Copilot</span><span class="pill">AI</span></div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-7.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 cert-item" data-year="2025" data-category="Design">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-8.png" target="_blank" rel="noopener">
+                                            <div class="data"><span>26</span><small>JULY</small></div>
+                                            <img src="static/img/cert-8.png" alt="GENAI">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Data Analytic</a></h6>
+                                        <p>Issued by <strong>TATA - Forage </strong> · Hands-on course simulating real-world data analytics tasks using AI-driven tools and techniques.</p>
+                                        <div class="meta"><span class="pill">2025</span><span class="pill">Design</span><span class="pill">Simu</span></div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-8.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 cert-item" data-year="2023" data-category="Business">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-9.png" target="_blank" rel="noopener">
+                                            <div class="data"><span>26</span><small>JULY</small></div>
+                                            <img src="static/img/cert-9.png" alt="Android Dev">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Data Visualization</a></h6>
+                                        <p>Issued by <strong>TATA - Forage</strong> · Leveraging data visualization techniques to drive business insights and informed decision-making.</p>
+                                        <div class="meta"><span class="pill">2025</span><span class="pill">Data</span><span class="pill">Business</span></div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-9.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                       
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 cert-item" data-year="2022" data-category="Science">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-10.png" target="_blank" rel="noopener">
+                                            <div class="data"><span>26</span><small>JULY</small></div>
+                                            <img src="static/img/cert-10.png" alt="SKILLS">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Personal Development</a></h6>
+                                        <p>Issued by <strong>LinkedIn</strong> · Strategies for enhancing productivity, communication, and career growth.”</em></p>
+                                        <div class="meta"><span class="pill">2025</span><span class="pill">Skill</span><span class="pill">Business</span></div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-10.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                          
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 cert-item" data-year="2025" data-category="Business">
+                                <div class="certificate-post reveal glow-border" data-reveal>
+                                    <div class="certificate-img">
+                                        <a href="static/img/cert-11.png" target="_blank" rel="noopener">
+                                            <div class="data"><span>26</span><small>JULY</small></div>
+                                            <img src="static/img/cert-11.png" alt="project">
+                                            <div class="shine"></div>
+                                        </a>
+                                    </div>
+                                    <div class="certificate-info">
+                                        <h6><a href="#">Portfolio Project</a></h6>
+                                        <p>Issued by <strong>LinedIn</strong> · Building, organizing, and presenting professional project portfolios effectively.”</p>
+                                        <div class="meta"><span class="pill">2025</span><span class="pill">Business</span><span class="pill">Marketing</span></div>
+                                        <div class="btn-bar mt-2">
+                                            <a href="static/img/cert-11.png" class="px-btn-arrow"><span>View Certificate</span><i class="arrow"></i></a>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                           
+
+                            <!-- Add more as needed -->
+                            
+                            <div class="col-12">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1"><i class="bi bi-chevron-left"></i></a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 my-3">
+                        <div class="blog-aside ms-lg-4">
+                            <!-- About Holder -->
+                            <div class="widget widget-author reveal glow-border" data-reveal>
+                                <div class="widget-title">
+                                    <h3>Certificate Holder</h3>
+                                </div>
+                                <div class="widget-body">
+                                    <div class="d-flex align-items-center pb-3">
+                                        <div class="avatar">
+                                            <img src="static/img/hello.png" title="" alt="Profile">
+                                        </div>
+                                        <div class="col ps-3">
+                                            <h6>Hello, I'm<br /> Devansh (aka Dev)</h6>
+                                        </div>
+                                    </div>
+                                    <p>"Hey there! I'm Devansh – part-time code wizard, full-time dream chaser . I turn caffeine and curiosity into projects, problems into solutions, and ideas into reality. This little corner is where I show off my skills, my journey, and the certificates that prove – hard work + passion = results. Stick around, explore, and maybe get inspired 😉."</p>
+                                </div>
+                            </div>
+                            <!-- End About Holder -->
+
+                            <!-- widget Tags -->
+                            <div class="widget widget-tags reveal glow-border" data-reveal>
+                                <div class="widget-title">
+                                    <h3>Skills</h3>
+                                </div>
+                                <div class="widget-body">
+                                    <div class="nav tag-cloud">
+                                        <a href="#">Gen AI</a>
+                                        <a href="#">Github</a>
+                                        <a href="#">Programming</a>
+                                        <a href="#">Cloud</a>
+                                        <a href="#">AI Ethics</a>
+                                        <a href="#">Java</a>
+                                        <a href="#">Data Analytic</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End widget Tags -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Certificates List -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 my-2">
+                    <div class="nav justify-content-center justify-content-md-start">
+                        <a href="#">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://x.com/century101_">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/_devansh_088/">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/devansh-saxena-here">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 my-2 text-center text-md-end">
+                    <p>© 2025 All rights reserved <a href="https://www.instagram.com/_devansh_088/">Devansh Saxena </a> </p>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+    <!-- End Footer -->
+
+    <!-- Base Scripts -->
+    <script src="static/js/jquery-3.5.1.min.js"></script>
+    <script src="static/plugin/appear/jquery.appear.js"></script>
+    <script src="static/plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/js/custom.js"></script>
+
+    <!-- Certificate Animations & Filters JS -->
+    <script>
+        // Intersection Observer for reveal animations
+        const revealEls = document.querySelectorAll('[data-reveal]');
+        const obs = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+                if(e.isIntersecting){
+                    e.target.classList.add('in-view');
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { threshold: .15 });
+        revealEls.forEach(el=>obs.observe(el));
+
+        // Mouse parallax shine effect per card
+        document.querySelectorAll('.certificate-post').forEach(card => {
+            card.addEventListener('mousemove', (ev)=>{
+                const r = card.getBoundingClientRect();
+                const mx = (ev.clientX - r.left) / r.width * 100 + '%';
+                const my = (ev.clientY - r.top) / r.height * 100 + '%';
+                card.style.setProperty('--mx', mx);
+                card.style.setProperty('--my', my);
+            });
+        });
+
+        // Simple client-side filters (search + year + category)
+        const grid = document.getElementById('certGrid');
+        const items = Array.from(grid.querySelectorAll('.cert-item'));
+        const search = document.getElementById('searchCert');
+        const year = document.getElementById('filterYear');
+        const cat = document.getElementById('filterCategory');
+
+        function applyFilters(){
+            const q = (search.value || '').toLowerCase().trim();
+            const y = year.value;
+            const c = cat.value;
+            items.forEach(it=>{
+                const title = it.querySelector('h6')?.innerText.toLowerCase() || '';
+                const okQ = q === '' || title.includes(q);
+                const okY = y === '' || it.dataset.year === y;
+                const okC = c === '' || it.dataset.category === c;
+                it.style.display = (okQ && okY && okC) ? '' : 'none';
+            });
+        }
+        [search, year, cat].forEach(el=> el && el.addEventListener('input', applyFilters));
+
+        // Optional: smooth fade on page load
+        document.addEventListener('DOMContentLoaded', ()=>{
+            document.body.classList.add('loaded');
+            applyFilters();
+        });
+    </script>
+</body>
+<!-- Body End -->
+
+</html>
